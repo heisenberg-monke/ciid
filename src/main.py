@@ -199,6 +199,10 @@ def assign_incident(incident_id: int, data: IncidentAssign, db: Session = Depend
 def serve_admin_home():
     return FileResponse(str(WEB_DIR / "admin" / "home" / "home.html"))
 
+@app.get("/my-incidents")
+def serve_my_incidents():
+    return FileResponse(str(WEB_DIR / "core" / "not-implemented.html"))
+
 @app.get("/my-cases")
 def serve_my_cases():
     return FileResponse(str(WEB_DIR / "core" / "not-implemented.html"))
