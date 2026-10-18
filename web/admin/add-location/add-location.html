@@ -56,8 +56,21 @@
 
         <section class="existing-list-section">
             <h2 class="list-title">Existing Locations</h2>
-            <div id="locationList" class="existing-list">
-                <!-- Locations injected by JS -->
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Building</th>
+                            <th>Room / Area</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="locationTbody">
+                        <!-- Rows injected by JS -->
+                    </tbody>
+                </table>
+                <p id="locationEmpty" class="empty-state hidden">No locations found in the database.</p>
             </div>
         </section>
     </main>

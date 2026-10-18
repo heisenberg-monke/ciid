@@ -6,7 +6,7 @@ from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.responses      import FileResponse
 from fastapi.staticfiles    import StaticFiles
 from pathlib                import Path
-from pydantic               import BaseModel, ConfigDict
+from pydantic               import BaseModel
 from sqlalchemy.orm         import Session
 
 Base.metadata.create_all(bind=engine)
@@ -44,13 +44,6 @@ class InvestigatorCreate(BaseModel):
     email: str
     specialization: str | None = None
 
-class CategoryOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    category_id: int
-    category_name: str
-    description: str | None = None
-
 # --- API Endpoints ---
 @app.get("/api/students")
 def read_students(db: Session = Depends(get_db)):
@@ -60,13 +53,31 @@ def read_students(db: Session = Depends(get_db)):
 def create_student(student: StudentCreate, db: Session = Depends(get_db)):
     return crud.create_student(db, name=student.name, email=student.email, phone=student.phone, department=student.department)
 
-@app.get("/api/categories", response_model=list[CategoryOut])
+@app.get("/api/categories")
 def read_categories(db: Session = Depends(get_db)):
-    return crud.get_categories(db)
+    return [
+        {"category_id": c.category_id, "category_name": c.category_name, "description": c.description}
+        for c in crud.get_categories(db)
+    ]
 
 @app.get("/api/locations")
 def read_locations(db: Session = Depends(get_db)):
-    return crud.get_locations(db)
+    return [
+        {"location_id": l.location_id, "building": l.building, "room_no": l.room_no, "location_type": l.location_type}
+        for l in crud.get_locations(db)
+    ]
+
+@app.delete("/api/categories/{category_id}")
+def remove_category(category_id: int, db: Session = Depends(get_db)):
+    if crud.delete_category(db, category_id):
+        return {"message": "Category deleted"}
+    raise HTTPException(status_code=404, detail="Category not found")
+
+@app.delete("/api/locations/{location_id}")
+def remove_location(location_id: int, db: Session = Depends(get_db)):
+    if crud.delete_location(db, location_id):
+        return {"message": "Location deleted"}
+    raise HTTPException(status_code=404, detail="Location not found")
 
 @app.get("/api/incidents/bounds")
 def get_incident_bounds(db: Session = Depends(get_db)):

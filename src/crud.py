@@ -132,6 +132,22 @@ def delete_investigator(db: Session, investigator_id: int):
         return True
     return False
 
+def delete_category(db: Session, category_id: int):
+    cat = db.query(IncidentCategory).filter(IncidentCategory.category_id == category_id).first()
+    if cat:
+        db.delete(cat)
+        db.commit()
+        return True
+    return False
+
+def delete_location(db: Session, location_id: int):
+    loc = db.query(Location).filter(Location.location_id == location_id).first()
+    if loc:
+        db.delete(loc)
+        db.commit()
+        return True
+    return False
+
 # --- Admin Incident Management ---
 def assign_severity_and_investigator(db: Session, incident_id: int, severity: str, investigator_id: int = None):
     incident = db.query(Incident).filter(Incident.incident_id == incident_id).first()

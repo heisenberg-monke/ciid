@@ -45,8 +45,20 @@
 
         <section class="existing-list-section">
             <h2 class="list-title">Existing Categories</h2>
-            <div id="categoryList" class="existing-list">
-                <!-- Categories injected by JS -->
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoryTbody">
+                        <!-- Rows injected by JS -->
+                    </tbody>
+                </table>
+                <p id="categoryEmpty" class="empty-state hidden">No categories found in the database.</p>
             </div>
         </section>
     </main>

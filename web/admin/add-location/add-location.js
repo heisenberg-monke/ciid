@@ -9,28 +9,46 @@ async function postJSON(url, data) {
 }
 
 async function getJSON(url) {
-    const response = await fetch(url);
+    const response = await fetch(url, { headers: { "Accept": "application/json" } });
     if (!response.ok) throw new Error(`Request failed (${response.status})`);
     return response.json();
 }
 
+async function deleteResource(url) {
+    const response = await fetch(url, { method: "DELETE" });
+    if (!response.ok) throw new Error(`Delete failed (${response.status})`);
+    return response.json();
+}
+
 async function fetchAndRenderLocations() {
-    const listDiv = document.getElementById("locationList");
-    if (!listDiv) return;
+    const tbody = document.getElementById("locationTbody");
+    const empty = document.getElementById("locationEmpty");
+    if (!tbody) return;
 
     try {
         const locations = await getJSON("/api/locations");
-        listDiv.innerHTML = locations.map(loc => `
-            <div class="category-item">
-                <div class="category-info">
-                    <span class="cat-name">${loc.building} - ${loc.room_no}</span>
-                    <span class="cat-desc">${loc.location_type}</span>
-                </div>
-            </div>
-        `).join('');
+        if (!locations || locations.length === 0) {
+            tbody.innerHTML = "";
+            empty.classList.remove("hidden");
+            return;
+        }
+        empty.classList.add("hidden");
+        tbody.innerHTML = locations.map(loc => `
+            <tr data-id="${loc.location_id}">
+                <td>${loc.building}</td>
+                <td>${loc.room_no}</td>
+                <td>${loc.location_type}</td>
+                <td class="action-cell">
+                    <button class="delete-btn" data-id="${loc.location_id}" title="Delete location">
+                        🗑 Delete
+                    </button>
+                </td>
+            </tr>
+        `).join("");
     } catch (err) {
         console.error("Error fetching locations:", err);
-        listDiv.innerHTML = '<p class="text-red-600">Failed to load locations.</p>';
+        tbody.innerHTML = `<tr><td colspan="4" class="error-cell">Error loading locations: ${err.message}</td></tr>`;
+        empty.classList.add("hidden");
     }
 }
 
@@ -38,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("locationForm");
     const message = document.getElementById("formMessage");
     const btn = document.getElementById("submitBtn");
+    const tbody = document.getElementById("locationTbody");
 
     if (!localStorage.getItem("currentAdmin")) {
         window.location.assign("/");
@@ -46,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
         btn.disabled = true;
-        message.classList.add("hidden");
+        message.className = "form-message hidden";
 
         try {
             const data = {
@@ -57,15 +76,31 @@ document.addEventListener("DOMContentLoaded", () => {
             await postJSON("/api/locations", data);
 
             message.textContent = "Location created successfully!";
-            message.className = "mt-4 text-center text-green-600 font-medium";
-            message.classList.remove("hidden");
+            message.className = "form-message success";
             form.reset();
             await fetchAndRenderLocations();
         } catch (err) {
             message.textContent = err.message;
-            message.className = "mt-4 text-center text-red-600 font-medium";
-            message.classList.remove("hidden");
+            message.className = "form-message error";
         } finally {
+            btn.disabled = false;
+        }
+    });
+
+    // Event delegation — one listener handles all delete buttons
+    tbody.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".delete-btn");
+        if (!btn) return;
+
+        const id = btn.dataset.id;
+        if (!confirm("Delete this location? This cannot be undone.")) return;
+
+        btn.disabled = true;
+        try {
+            await deleteResource(`/api/locations/${id}`);
+            await fetchAndRenderLocations();
+        } catch (err) {
+            alert(`Failed to delete: ${err.message}`);
             btn.disabled = false;
         }
     });
