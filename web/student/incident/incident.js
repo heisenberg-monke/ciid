@@ -43,15 +43,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (res.ok) {
             alert('Incident reported successfully!');
-            window.location.href = '/home';
+            window.location.href = '/student-home';
         } else {
             alert('Failed to submit incident.');
         }
     });
 
     document.getElementById('backBtn').addEventListener('click', () => {
-        window.location.href = '/home';
+        window.location.href = '/student-home';
     });
+
 });
 
 let incidents = [];

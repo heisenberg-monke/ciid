@@ -14,7 +14,7 @@
                 <h1>Student Portal</h1>
                 <p>Welcome back to the Campus Incident Information System.</p>
             </div>
-            <button id="logoutBtn" class="btn-danger">Logout</button>
+            <button id="logoutBtn" class="btn-danger" onclick="logout()">Logout</button>
         </header>
 
         <div class="card-grid">
@@ -37,6 +37,13 @@
     </div>
 
     <script src="/static/core/core.js"></script>
-    <script src="/static/student/home/home.js" defer></script>
+    <script>
+        function logout() {
+            console.log("Executing inline logout...");
+            localStorage.removeItem('currentStudent');
+            window.location.href = '/';
+        }
+    </script>
+    <script src="/static/student/home/home.js"></script>
 </body>
 </html>

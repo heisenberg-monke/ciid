@@ -99,11 +99,11 @@ def serve_login():
 
 @app.get("/home")
 def serve_home():
-    return FileResponse(str(WEB_DIR / "home" / "home.html"))
+    return FileResponse(str(WEB_DIR / "student" / "home" / "student-home.html"))
 
 @app.get("/incident")
 def serve_incident():
-    return FileResponse(str(WEB_DIR / "incident" / "incident.html"))
+    return FileResponse(str(WEB_DIR / "student" / "incident" / "incident.html"))
 
 @app.get("/api/investigators")
 def read_investigators(db: Session = Depends(get_db)):
@@ -115,11 +115,11 @@ def create_investigator(inv: InvestigatorCreate, db: Session = Depends(get_db)):
 
 @app.get("/student-home")
 def serve_student_home():
-    return FileResponse(str(WEB_DIR / "home" / "student-home.html"))
+    return FileResponse(str(WEB_DIR / "student" / "home" / "student-home.html"))
 
 @app.get("/investigator-home")
 def serve_investigator_home():
-    return FileResponse(str(WEB_DIR / "home" / "investigator-home.html"))
+    return FileResponse(str(WEB_DIR / "investigator" / "home" / "investigator-home.html"))
 
 # --- Schemas ---
 class CategoryCreate(BaseModel):
@@ -198,6 +198,14 @@ def assign_incident(incident_id: int, data: IncidentAssign, db: Session = Depend
 @app.get("/admin-home")
 def serve_admin_home():
     return FileResponse(str(WEB_DIR / "admin" / "home" / "home.html"))
+
+@app.get("/my-cases")
+def serve_my_cases():
+    return FileResponse(str(WEB_DIR / "core" / "not-implemented.html"))
+
+@app.get("/profile")
+def serve_profile():
+    return FileResponse(str(WEB_DIR / "core" / "not-implemented.html"))
 
 @app.get("/admin/add-category")
 def serve_add_category():

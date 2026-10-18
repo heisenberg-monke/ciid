@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not Implemented | CIIS</title>
+    <link rel="stylesheet" href="/static/core/core.css">
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 80vh;
+        }
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        .btn-back {
+            margin-top: 20px;
+            text-decoration: none;
+            color: var(--blue);
+            font-weight: 600;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <div class="container">
+            <div class="icon">🚧</div>
+            <h1>Under Construction</h1>
+            <p>This feature is not yet implemented. Please check back soon!</p>
+            <a href="#" id="backLink" class="btn-back">Go Back</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backLink = document.getElementById('backLink');
+            // Use document.referrer to send the user back to where they came from
+            const previousPage = document.referrer;
+
+            if (previousPage && previousPage.includes(window.location.origin)) {
+                backLink.href = previousPage;
+                backLink.textContent = 'Return to Previous Page';
+            } else {
+                // Fallback to a sensible default based on role if referrer is missing
+                if (localStorage.getItem('currentAdmin')) {
+                    backLink.href = '/admin-home';
+                } else if (localStorage.getItem('currentInvestigator')) {
+                    backLink.href = '/investigator-home';
+                } else if (localStorage.getItem('currentStudent')) {
+                    backLink.href = '/student-home';
+                } else {
+                    backLink.href = '/';
+                }
+                backLink.textContent = 'Return to Home';
+            }
+        });
+    </script>
+</body>
+</html>

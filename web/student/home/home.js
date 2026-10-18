@@ -1,27 +1,25 @@
+function logout() {
+    console.log("Executing logout...");
+    localStorage.removeItem('currentStudent');
+    window.location.href = '/';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    const student = JSON.parse(localStorage.getItem('currentStudent'));
-    if (!student) {
+    console.log("Student home JS loaded");
+    const studentStr = localStorage.getItem('currentStudent');
+
+    if (!studentStr) {
+        console.log("No session found, redirecting...");
         window.location.href = '/';
         return;
     }
 
-    // Populate Account Modal Info
-    document.getElementById('accName').textContent = student.name;
-    document.getElementById('accEmail').textContent = student.email;
-    document.getElementById('accDept').textContent = student.department;
-    document.getElementById('accPhone').textContent = student.phone || 'N/A';
-
-    // Account Modal Toggle
-    const modal = document.getElementById('accountModal');
-    document.getElementById('accountBtn').addEventListener('click', () => modal.classList.remove('hidden'));
-    document.getElementById('closeModal').addEventListener('click', () => modal.classList.add('hidden'));
-    document.getElementById('logoutBtn').addEventListener('click', () => {
+    try {
+        const student = JSON.parse(studentStr);
+        console.log("Student session active:", student.name);
+    } catch (e) {
+        console.error("Failed to parse student session", e);
         localStorage.removeItem('currentStudent');
         window.location.href = '/';
-    });
-
-    // Navigation buttons
-    document.getElementById('reportIncidentBtn').addEventListener('click', () => {
-        window.location.href = '/incident';
-    });
+    }
 });
