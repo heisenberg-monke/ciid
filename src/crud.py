@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Student, Incident, IncidentCategory, Location, Investigator
+from models import Student, Incident, IncidentCategory, Location, Investigator, Investigation
 
 # --- Students ---
 def get_students(db: Session, skip: int = 0, limit: int = 100):
@@ -28,7 +28,7 @@ def get_incidents_date_bounds(db: Session):
     return {"min": bounds[0], "max": bounds[1]}
 
 # --- Incidents ---
-def get_incidents(db: Session, skip: int = 0, limit: int = 100, sort_by: str = None, sort_order: str = 'asc', severities: list = None, date_min: str = None, date_max: str = None):
+def get_incidents(db: Session, skip: int = 0, limit: int = 100, sort_by: str = None, sort_order: str = 'asc', severities: list = None, date_min: str = None, date_max: str = None, investigator_ids: list = None):
     from sqlalchemy import case, asc, desc, or_
     query = db.query(Incident)
 
@@ -47,6 +47,39 @@ def get_incidents(db: Session, skip: int = 0, limit: int = 100, sort_by: str = N
     if date_max:
         query = query.filter(Incident.incident_date <= date_max)
 
+    if investigator_ids is not None:
+        if isinstance(investigator_ids, (int, str)):
+            investigator_ids = [investigator_ids]
+
+        numeric_ids = []
+        include_unassigned = False
+        for i_id in investigator_ids:
+            if str(i_id).lower() in ("unassigned", "none", "null"):
+                include_unassigned = True
+            else:
+                try:
+                    numeric_ids.append(int(i_id))
+                except (ValueError, TypeError):
+                    pass
+
+        conditions = []
+        if numeric_ids:
+            assigned_ids = db.query(Investigation.incident_id).filter(
+                Investigation.investigator_id.in_(numeric_ids)
+            ).subquery()
+            conditions.append(Incident.incident_id.in_(assigned_ids))
+
+        if include_unassigned:
+            assigned_with_inv = db.query(Investigation.incident_id).filter(
+                Investigation.investigator_id.isnot(None)
+            ).subquery()
+            conditions.append(Incident.incident_id.not_in(assigned_with_inv))
+
+        if conditions:
+            query = query.filter(or_(*conditions))
+        else:
+            query = query.filter(Incident.incident_id == -1)
+
     # Sorting
     if sort_by:
         if sort_by == 'severity':
@@ -64,9 +97,34 @@ def get_incidents(db: Session, skip: int = 0, limit: int = 100, sort_by: str = N
             order_func = asc if sort_order == 'asc' else desc
             query = query.order_by(order_func(attr))
     else:
-        query = query.order_by(Incident.incident_id.desc())
+        query = query.order_by(Incident.incident_id.asc())
 
-    return query.offset(skip).limit(limit).all()
+    rows = query.offset(skip).limit(limit).all()
+
+    # Batch-fetch investigator assignments to avoid N+1 queries
+    incident_ids = [r.incident_id for r in rows]
+    inv_map = {}
+    if incident_ids:
+        inv_rows = db.query(Investigation.incident_id, Investigation.investigator_id).filter(
+            Investigation.incident_id.in_(incident_ids)
+        ).all()
+        inv_map = {r.incident_id: r.investigator_id for r in inv_rows}
+
+    return [
+        {
+            "incident_id": inc.incident_id,
+            "category_id": inc.category_id,
+            "location_id": inc.location_id,
+            "reported_by": inc.reported_by,
+            "incident_date": inc.incident_date,
+            "reported_date": inc.reported_date,
+            "severity": inc.severity,
+            "description": inc.description,
+            "status": inc.status,
+            "investigator_id": inv_map.get(inc.incident_id),
+        }
+        for inc in rows
+    ]
 
 def create_incident(db: Session, category_id: int, location_id: int, reported_by: int, incident_date: str, severity: str, description: str):
     db_incident = Incident(

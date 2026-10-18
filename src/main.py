@@ -92,12 +92,14 @@ def read_incidents(
     sort_order: str = 'asc',
     severity: list[str] | None = Query(None),
     date_min: str = None,
-    date_max: str = None
+    date_max: str = None,
+    investigator_id: list[str] | None = Query(None),
 ):
     return crud.get_incidents(
         db, skip=skip, limit=limit,
         sort_by=sort_by, sort_order=sort_order,
-        severities=severity, date_min=date_min, date_max=date_max
+        severities=severity, date_min=date_min, date_max=date_max,
+        investigator_ids=investigator_id,
     )
 
 @app.post("/api/incidents")
@@ -154,7 +156,7 @@ class LocationCreate(BaseModel):
     location_type: str
 
 class IncidentAssign(BaseModel):
-    severity: str
+    severity: str | None = None
     investigator_id: int | None = None
 
 class AdminLogin(BaseModel):

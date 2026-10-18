@@ -110,26 +110,33 @@ tr:hover td {
     background: #fbfcff;
 }
 
-.btn-action {
-    padding: 6px 12px;
-    border-radius: 6px;
+.action-cell {
+    width: 110px;
+    text-align: right;
+}
+
+.delete-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: 1px solid #f0cbd1;
+    color: var(--red);
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 8px;
     cursor: pointer;
-    border: none;
-    transition: filter 0.2s;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
 }
 
-.btn-save {
-    background: var(--blue);
-    color: white;
+.delete-btn:hover {
+    background: #fff4f5;
+    border-color: var(--red);
 }
 
-.btn-delete {
-    background: var(--red);
-    color: white;
-}
-
-.btn-action:hover {
-    filter: brightness(1.1);
+.delete-btn:disabled {
+    opacity: 0.45;
+    cursor: wait;
 }

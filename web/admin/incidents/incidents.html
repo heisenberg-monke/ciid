@@ -13,9 +13,6 @@
                 <span>⬅️</span>
                 <span>Back to Dashboard</span>
             </a>
-            <div class="controls">
-                <!-- Sort Controls removed from here -->
-            </div>
         </div>
     </nav>
 
@@ -25,70 +22,82 @@
             <p>Triaging reported incidents and assigning investigators.</p>
         </header>
 
-        <!-- Advanced Filters -->
-        <section class="filter-panel">
-            <div class="filter-section">
-                <h3 class="filter-title">Filter by Severity</h3>
-                <div class="severity-checkboxes">
-                    <label class="checkbox-label"><input type="checkbox" value="Low" checked> Low</label>
-                    <label class="checkbox-label"><input type="checkbox" value="Medium" checked> Medium</label>
-                    <label class="checkbox-label"><input type="checkbox" value="High" checked> High</label>
-                    <label class="checkbox-label"><input type="checkbox" value="Critical" checked> Critical</label>
-                </div>
-            </div>
+        <!-- Accordion Filter Bar -->
+        <div class="filter-bar">
 
-            <div class="filter-section">
-                <h3 class="filter-title">Filter by Date Range</h3>
-                <div class="date-slider-container">
-                    <div class="slider-labels">
-                        <span id="minDateLabel">Min Date</span>
-                        <span id="maxDateLabel">Max Date</span>
-                    </div>
-                    <div class="dual-slider-container">
-                        <input type="range" id="minDateSlider" min="0" max="100" value="0" class="date-slider">
-                        <input type="range" id="maxDateSlider" min="0" max="100" value="100" class="date-slider">
-                    </div>
-                    <div class="date-inputs">
-                        <input type="date" id="minDate">
-                        <span class="date-sep">to</span>
-                        <input type="date" id="maxDate">
+            <!-- Severity column -->
+            <div class="filter-col" id="col-severity">
+                <button class="filter-col-trigger" aria-expanded="false" aria-controls="panel-severity">
+                    <span class="col-label">Severity</span>
+                    <span class="col-caret">▾</span>
+                </button>
+                <div class="filter-col-panel" id="panel-severity" hidden>
+                    <div class="severity-checkboxes">
+                        <label class="checkbox-label"><input type="checkbox" value="Low" checked> Low</label>
+                        <label class="checkbox-label"><input type="checkbox" value="Medium" checked> Medium</label>
+                        <label class="checkbox-label"><input type="checkbox" value="High" checked> High</label>
+                        <label class="checkbox-label"><input type="checkbox" value="Critical" checked> Critical</label>
                     </div>
                 </div>
             </div>
 
-            <div class="filter-section">
-                <h3 class="filter-title">Sort Options</h3>
-                <div class="sort-controls">
-                    <div class="sort-item">
-                        <label for="sortBy">Sort By:</label>
-                        <select id="sortBy">
-                            <option value="incident_id">ID</option>
-                            <option value="incident_date">Date</option>
-                            <option value="severity">Severity</option>
-                        </select>
-                    </div>
-                    <div class="sort-item">
-                        <label for="sortOrder">Order:</label>
-                        <select id="sortOrder">
-                            <option value="asc">Ascending</option>
-                            <option value="desc">Descending</option>
-                        </select>
+            <!-- Date column -->
+            <div class="filter-col" id="col-date">
+                <button class="filter-col-trigger" aria-expanded="false" aria-controls="panel-date">
+                    <span class="col-label">Date Range</span>
+                    <span class="col-caret">▾</span>
+                </button>
+                <div class="filter-col-panel" id="panel-date" hidden>
+                    <div class="date-slider-container">
+                        <div class="slider-labels">
+                            <span id="minDateLabel">Min Date</span>
+                            <span id="maxDateLabel">Max Date</span>
+                        </div>
+                        <div class="dual-slider-container" id="sliderContainer">
+                            <div class="slider-track-highlight" id="sliderTrackHighlight"></div>
+                            <input type="range" id="minDateSlider" min="0" max="100" value="0" class="date-slider">
+                            <input type="range" id="maxDateSlider" min="0" max="100" value="100" class="date-slider">
+                        </div>
+                        <div class="date-inputs">
+                            <div class="date-input-wrapper">
+                                <input type="text" id="minDate" placeholder="YYYY/MM/DD" maxlength="10">
+                                <button type="button" class="date-cal-btn" id="minDateCalBtn" title="Pick min date">📅</button>
+                                <input type="date" id="minDateNative" class="native-date-hidden" tabindex="-1">
+                            </div>
+                            <span class="date-sep">to</span>
+                            <div class="date-input-wrapper">
+                                <input type="text" id="maxDate" placeholder="YYYY/MM/DD" maxlength="10">
+                                <button type="button" class="date-cal-btn" id="maxDateCalBtn" title="Pick max date">📅</button>
+                                <input type="date" id="maxDateNative" class="native-date-hidden" tabindex="-1">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="filter-actions">
-                <button id="applyFiltersBtn" class="btn-apply">Apply Filters</button>
+
+            <!-- Investigator column -->
+            <div class="filter-col" id="col-investigator">
+                <button class="filter-col-trigger" aria-expanded="false" aria-controls="panel-investigator">
+                    <span class="col-label">Investigator</span>
+                    <span class="col-caret">▾</span>
+                </button>
+                <div class="filter-col-panel" id="panel-investigator" hidden>
+                    <div class="investigator-checkboxes" id="investigatorCheckboxes">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
             </div>
-        </section>
+
+        </div>
 
         <div class="table-container">
             <table id="incidentsTable">
                 <thead>
                     <tr>
-                        <th class="sortable" data-sort="incident_id">ID ↕</th>
-                        <th class="sortable" data-sort="incident_date">Date ↕</th>
+                        <th class="sortable" data-sort="incident_id">ID <span class="sort-indicator">↕</span></th>
+                        <th class="sortable" data-sort="incident_date">Date <span class="sort-indicator">↕</span></th>
                         <th>Description</th>
-                        <th class="sortable" data-sort="severity">Severity ↕</th>
+                        <th class="sortable" data-sort="severity">Severity <span class="sort-indicator">↕</span></th>
                         <th>Investigator</th>
                         <th>Action</th>
                     </tr>
