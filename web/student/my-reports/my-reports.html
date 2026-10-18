@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reports | CIIS Student Portal</title>
+    <link rel="stylesheet" href="/static/core/core.css?v=2">
+    <link rel="stylesheet" href="/static/student/my-reports/my-reports.css?v=2">
+</head>
+<body>
+    <nav class="topnav">
+        <div class="nav-inner">
+            <a href="/student-home" class="nav-back">⬅ Back to Dashboard</a>
+            <span class="nav-user" id="navUser"></span>
+        </div>
+    </nav>
+
+    <div class="page-shell">
+        <header class="page-header">
+            <div class="header-content">
+                <div>
+                    <h1>My Reported Incidents</h1>
+                    <p id="reportCount">Loading your reports…</p>
+                </div>
+                <a href="/incident" class="btn-primary-action">+ Report New Incident</a>
+            </div>
+        </header>
+
+        <!-- Stats row -->
+        <div class="stats-row" id="statsRow">
+            <div class="stat-card">
+                <span class="stat-num" id="statOpen">—</span>
+                <span class="stat-label">Open</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-num" id="statInProgress">—</span>
+                <span class="stat-label">In Progress</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-num" id="statResolved">—</span>
+                <span class="stat-label">Resolved</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-num" id="statTotal">—</span>
+                <span class="stat-label">Total Filed</span>
+            </div>
+        </div>
+
+        <!-- Reports table container -->
+        <div class="table-container">
+            <table id="reportsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Incident Date</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Description</th>
+                        <th>Severity</th>
+                        <th class="action-cell">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="reportsBody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="/static/core/core.js?v=2"></script>
+    <script src="/static/student/my-reports/my-reports.js?v=2" defer></script>
+</body>
+</html>

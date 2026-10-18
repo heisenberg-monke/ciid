@@ -23,4 +23,4 @@ pip install --quiet -r requirements.txt
 
 # 4. Start the FastAPI server using --app-dir src
 echo "Starting FastAPI server on http://127.0.0.1:8000 ..."
-uvicorn main:app --app-dir src --reload
+uvicorn main:app --app-dir src --reload --reload-dir src

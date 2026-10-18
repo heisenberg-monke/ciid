@@ -1,7 +1,13 @@
 // ── Auth guard ────────────────────────────────────────────────────────────────
 const invStr = localStorage.getItem('currentInvestigator');
-if (!invStr) window.location.assign('/');
-const investigator = JSON.parse(invStr);
+if (!invStr) {
+    if (localStorage.getItem('currentStudent')) {
+        window.location.replace('/student/profile');
+    } else {
+        window.location.assign('/');
+    }
+}
+const investigator = invStr ? JSON.parse(invStr) : {};
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function initials(name) {

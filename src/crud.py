@@ -268,3 +268,27 @@ def update_investigation_status(db: Session, investigation_id: int, status: str)
     db.commit()
     db.refresh(inv)
     return {"investigation_id": inv.investigation_id, "status": inv.status}
+
+
+def get_incidents_by_student(db: Session, student_id: int):
+    """Return all incidents reported by a specific student."""
+    rows = (
+        db.query(Incident)
+        .filter(Incident.reported_by == student_id)
+        .order_by(Incident.incident_id.desc())
+        .all()
+    )
+    return [
+        {
+            "incident_id":   inc.incident_id,
+            "category_id":   inc.category_id,
+            "location_id":   inc.location_id,
+            "reported_by":   inc.reported_by,
+            "incident_date": inc.incident_date,
+            "reported_date": inc.reported_date,
+            "severity":      inc.severity,
+            "description":   inc.description,
+            "status":        inc.status,
+        }
+        for inc in rows
+    ]

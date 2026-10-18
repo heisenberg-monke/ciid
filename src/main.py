@@ -13,6 +13,14 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Campus Incident Management System")
 
+@app.middleware("http")
+async def add_no_cache_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 WEB_DIR = BASE_DIR / "web"
 
@@ -199,6 +207,11 @@ def assign_incident(incident_id: int, data: IncidentAssign, db: Session = Depend
         return updated
     raise HTTPException(status_code=404, detail="Incident not found")
 
+# --- Student API ---
+@app.get("/api/students/{student_id}/incidents")
+def get_student_incidents(student_id: int, db: Session = Depends(get_db)):
+    return crud.get_incidents_by_student(db, student_id)
+
 # --- Investigator API ---
 class InvestigationStatusUpdate(BaseModel):
     status: str
@@ -220,8 +233,9 @@ def serve_admin_home():
     return FileResponse(str(WEB_DIR / "admin" / "home" / "home.html"))
 
 @app.get("/my-incidents")
+@app.get("/my-reports")
 def serve_my_incidents():
-    return FileResponse(str(WEB_DIR / "core" / "not-implemented.html"))
+    return FileResponse(str(WEB_DIR / "student" / "my-reports" / "my-reports.html"))
 
 @app.get("/my-cases")
 def serve_my_cases():
@@ -232,8 +246,9 @@ def serve_investigator_profile():
     return FileResponse(str(WEB_DIR / "investigator" / "profile" / "profile.html"))
 
 @app.get("/profile")
+@app.get("/student/profile")
 def serve_profile():
-    return FileResponse(str(WEB_DIR / "core" / "not-implemented.html"))
+    return FileResponse(str(WEB_DIR / "student" / "profile" / "profile.html"))
 
 @app.get("/admin/add-category")
 def serve_add_category():
@@ -254,3 +269,7 @@ def serve_admin_students():
 @app.get("/admin/investigators")
 def serve_admin_investigators():
     return FileResponse(str(WEB_DIR / "admin" / "investigators" / "investigators.html"))
+
+@app.get("/.well-known/appspecific/com.chrome.devtools.json")
+def chrome_devtools_probe():
+    return {}
