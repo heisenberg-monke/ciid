@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Category | CIIS Admin</title>
+    <link rel="stylesheet" href="/static/admin/add-category/add-category.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="/admin-home" class="nav-link">
+                <span>⬅️</span>
+                <span>Back to Dashboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <h1>Add New Category</h1>
+            <p>Define a new type of incident for the system.</p>
+        </header>
+
+        <div class="admin-form">
+            <form id="categoryForm" class="form-stack">
+                <div class="field">
+                    <label for="categoryName">Category Name</label>
+                    <input type="text" id="categoryName" name="category_name"
+                           placeholder="e.g. Theft, Vandalism" required>
+                </div>
+
+                <div class="field">
+                    <label for="categoryDesc">Description (Optional)</label>
+                    <textarea id="categoryDesc" name="description"
+                              placeholder="Describe what this category covers..."></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn" class="submit-button">
+                    Create Category
+                </button>
+            </form>
+            <div id="formMessage" class="form-message hidden"></div>
+        </div>
+    </main>
+
+    <script src="/static/admin/add-category/add-category.js" defer></script>
+</body>
+</html>

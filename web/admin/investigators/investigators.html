@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Investigators | CIIS Admin</title>
+    <link rel="stylesheet" href="/static/admin/investigators/investigators.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="/admin-home" class="nav-link">
+                <span>⬅️</span>
+                <span>Back to Dashboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <h1>Investigator Management</h1>
+            <p>Oversee security staff and their specialized expertise.</p>
+        </header>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Specialization</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="investigatorTableBody">
+                    <!-- Rows injected by JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="/static/admin/investigators/investigators.js" defer></script>
+</body>
+</html>

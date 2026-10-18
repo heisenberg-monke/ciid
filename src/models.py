@@ -47,7 +47,7 @@ class Incident(Base):
     reported_by = Column(Integer, ForeignKey("students.student_id"), nullable=False)
     incident_date = Column(DateTime, nullable=False)
     reported_date = Column(DateTime, default=datetime.utcnow, nullable=False)
-    severity = Column(String(50), nullable=False)
+    severity = Column(String(50), nullable=True) # Nullable until Admin assigns it
     description = Column(Text, nullable=False)
     status = Column(String(50), default="Open", nullable=False)
 
@@ -66,6 +66,8 @@ class Investigator(Base):
 
     investigator_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     staff_id = Column(String(50), unique=True, nullable=False)
+    name = Column(String(100), nullable=False)
+    email = Column(String(100), unique=True, index=True, nullable=False)
     specialization = Column(String(100), nullable=True)
     availability_status = Column(String(50), default="Available", nullable=False)
 
@@ -194,3 +196,12 @@ class IncidentHistory(Base):
     remarks = Column(Text, nullable=True)
 
     incident = relationship("Incident", back_populates="history")
+
+class Admin(Base):
+    __tablename__ = "admins"
+
+    admin_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    username = Column(String(50), unique=True, nullable=False)
+    email = Column(String(100), unique=True, nullable=False)
+    password = Column(String(100), nullable=False)
+    

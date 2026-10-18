@@ -1,4 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --navy: #101a35;
+    --navy-light: #1b2a4d;
+    --blue: #4263eb;
+    --blue-dark: #304fd0;
+    --indigo: #6c55dc;
+    --red: #d9465f;
+    --text: #18233d;
+    --muted: #78839b;
+    --border: #e5e9f2;
+    --surface: #ffffff;
+    --background: #f3f6fc;
+    --success: #16876a;
+    --shadow: 0 28px 80px rgba(10, 22, 51, 0.2);
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: #f3f4f6;
-    font-family: ui-sans-serif, system-ui, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--background);
+}
+
+h1, h2, h3 {
+    font-family: 'Manrope', sans-serif;
+}
+
+.page-shell {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(10, 22, 51, 0.05);
+    padding: 24px;
+}
+
+.btn-primary {
+    background: linear-gradient(110deg, var(--blue), var(--blue-dark));
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, filter 0.2s;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.input-field {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-field:focus {
+    border-color: var(--blue);
+}
+
+.hidden {
+    display: none !important;
 }

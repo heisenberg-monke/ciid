@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Incidents | CIIS Admin</title>
+    <link rel="stylesheet" href="/static/admin/incidents/incidents.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="/admin-home" class="nav-link">
+                <span>⬅️</span>
+                <span>Back to Dashboard</span>
+            </a>
+            <div class="controls">
+                <!-- Sort Controls -->
+                <div class="sort-group">
+                    <label for="sortBy">Sort By:</label>
+                    <select id="sortBy">
+                        <option value="incident_id">ID</option>
+                        <option value="incident_date">Date</option>
+                        <option value="severity">Severity</option>
+                    </select>
+                    <select id="sortOrder">
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <h1>Incident Assignment</h1>
+            <p>Triaging reported incidents and assigning investigators.</p>
+        </header>
+
+        <!-- Advanced Filters -->
+        <section class="filter-panel">
+            <div class="filter-section">
+                <h3 class="filter-title">Filter by Severity</h3>
+                <div class="severity-checkboxes">
+                    <label class="checkbox-label"><input type="checkbox" value="Low" checked> Low</label>
+                    <label class="checkbox-label"><input type="checkbox" value="Medium" checked> Medium</label>
+                    <label class="checkbox-label"><input type="checkbox" value="High" checked> High</label>
+                    <label class="checkbox-label"><input type="checkbox" value="Critical" checked> Critical</label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3 class="filter-title">Filter by Date Range</h3>
+                <div class="date-slider-container">
+                    <div class="slider-labels">
+                        <span id="minDateLabel">Min Date</span>
+                        <span id="maxDateLabel">Max Date</span>
+                    </div>
+                    <input type="range" id="dateSlider" min="0" max="100" value="0" class="date-slider">
+                    <div class="date-inputs">
+                        <input type="date" id="minDate">
+                        <span class="date-sep">to</span>
+                        <input type="date" id="maxDate">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="table-container">
+            <table id="incidentsTable">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-sort="incident_id">ID ↕</th>
+                        <th class="sortable" data-sort="incident_date">Date ↕</th>
+                        <th>Description</th>
+                        <th class="sortable" data-sort="severity">Severity ↕</th>
+                        <th>Investigator</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="incidentTableBody">
+                    <!-- Rows injected by JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="/static/core/core.js"></script>
+    <script src="/static/admin/incidents/incidents.js" defer></script>
+</body>
+</html>

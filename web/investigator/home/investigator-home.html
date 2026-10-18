@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigator Home | CIIS</title>
+    <link rel="stylesheet" href="/static/core/core.css">
+    <link rel="stylesheet" href="/static/investigator/home/home.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="header">
+            <div>
+                <h1>Investigator Portal</h1>
+                <p>Welcome back. Review and manage your active investigations.</p>
+            </div>
+            <button id="logoutBtn" class="btn-danger">Logout</button>
+        </header>
+
+        <div class="card-grid">
+            <a href="/admin/incidents" class="home-card">
+                <div class="card-icon">🚨</div>
+                <h3>Manage Incidents</h3>
+                <p>Assign severity and investigators to reports.</p>
+            </a>
+            <a href="/my-cases" class="home-card">
+                <div class="card-icon">📂</div>
+                <h3>My Active Cases</h3>
+                <p>View all incidents assigned to you.</p>
+            </a>
+            <a href="/profile" class="home-card">
+                <div class="card-icon">👤</div>
+                <h3>Profile</h3>
+                <p>Manage your professional credentials.</p>
+            </a>
+        </div>
+    </div>
+
+    <script src="/static/core/core.js"></script>
+    <script src="/static/student/home/home.js" defer></script>
+</body>
+</html>

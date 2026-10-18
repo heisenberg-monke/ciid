@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | CIIS</title>
+    <link rel="stylesheet" href="/static/admin/home/home.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span>🛡️</span>
+                <h1>CIIS Admin Portal</h1>
+            </div>
+            <button id="logoutBtn">Logout</button>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <h2>Control Panel</h2>
+            <p>Manage campus security assets and incident workflows.</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <a href="/admin/add-category" class="admin-card">
+                <div class="card-icon">📁</div>
+                <h3>Categories</h3>
+                <p>Define incident types and classifications.</p>
+            </a>
+
+            <a href="/admin/add-location" class="admin-card">
+                <div class="card-icon">📍</div>
+                <h3>Locations</h3>
+                <p>Manage campus buildings and room mappings.</p>
+            </a>
+
+            <a href="/admin/incidents" class="admin-card">
+                <div class="card-icon">🚨</div>
+                <h3>Incidents</h3>
+                <p>Assign severity and investigators to reports.</p>
+            </a>
+
+            <a href="/admin/students" class="admin-card">
+                <div class="card-icon">🎓</div>
+                <h3>Students</h3>
+                <p>Manage student accounts and departments.</p>
+            </a>
+
+            <a href="/admin/investigators" class="admin-card">
+                <div class="card-icon">🕵️</div>
+                <h3>Investigators</h3>
+                <p>Oversee staff and their specializations.</p>
+            </a>
+        </div>
+    </main>
+
+    <script src="/static/admin/home/home.js" defer></script>
+</body>
+</html>

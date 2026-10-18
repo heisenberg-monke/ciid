@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Incident | CIIS</title>
+    <link rel="stylesheet" href="/static/core/core.css">
+    <link rel="stylesheet" href="/static/student/incident/incident.css">
+</head>
+<body>
+    <div class="page-shell">
+        <div class="card">
+            <header class="form-header">
+                <h1>Report an Incident</h1>
+                <button id="backBtn" class="btn-link">&larr; Back to Menu</button>
+            </header>
+
+            <form id="incidentForm" class="form-stack">
+                <div class="field">
+                    <label for="incidentCategory">Category</label>
+                    <select id="incidentCategory" required class="input-field">
+                        <option value="">Select Category</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="incidentLocation">Location</label>
+                    <select id="incidentLocation" required class="input-field">
+                        <option value="">Select Location</option>
+                    </select>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="incidentDate">Incident Date & Time</label>
+                        <input type="datetime-local" id="incidentDate" required class="input-field">
+                    </div>
+                    <div class="field">
+                        <label for="incidentSeverity">Severity</label>
+                        <select id="incidentSeverity" required class="input-field">
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="incidentDescription">Description</label>
+                    <textarea id="incidentDescription" rows="4" placeholder="Provide details of the incident..." required class="input-field"></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">Submit Report</button>
+            </form>
+            <div id="formMessage" class="form-message hidden"></div>
+        </div>
+    </div>
+
+    <script src="/static/core/core.js"></script>
+    <script src="/static/student/incident/incident.js" defer></script>
+</body>
+</html>

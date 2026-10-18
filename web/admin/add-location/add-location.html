@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Location | CIIS Admin</title>
+    <link rel="stylesheet" href="/static/admin/add-location/add-location.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="/admin-home" class="nav-link">
+                <span>⬅️</span>
+                <span>Back to Dashboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <h1>Add New Location</h1>
+            <p>Register a new building or room on campus.</p>
+        </header>
+
+        <div class="admin-form">
+            <form id="locationForm" class="form-stack">
+                <div class="field">
+                    <label for="building">Building Name</label>
+                    <input type="text" id="building" name="building"
+                           placeholder="e.g. Science Hall" required>
+                </div>
+
+                <div class="field">
+                    <label for="roomNo">Room Number / Area</label>
+                    <input type="text" id="roomNo" name="room_no"
+                           placeholder="e.g. 302 or Lobby" required>
+                </div>
+
+                <div class="field">
+                    <label for="locationType">Location Type</label>
+                    <select id="locationType" name="location_type" required>
+                        <option value="">-- Select Type --</option>
+                        <option value="Indoor">Indoor</option>
+                        <option value="Outdoor">Outdoor</option>
+                        <option value="Parking">Parking Lot</option>
+                        <option value="Common Area">Common Area</option>
+                    </select>
+                </div>
+
+                <button type="submit" id="submitBtn" class="submit-button">
+                    Create Location
+                </button>
+            </form>
+            <div id="formMessage" class="form-message hidden"></div>
+        </div>
+    </main>
+
+    <script src="/static/admin/add-location/add-location.js" defer></script>
+</body>
+</html>

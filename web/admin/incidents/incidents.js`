@@ -1,0 +1,153 @@
+const SEVERITY_ORDER = {
+    'Low': 1,
+    'Medium': 2,
+    'High': 3,
+    'Critical': 4,
+    'Unassigned': 0
+};
+
+let incidents = [];
+let investigators = [];
+
+async function loadData() {
+    try {
+        incidents = await CIIS.getJSON('/api/incidents');
+        investigators = await CIIS.getJSON('/api/investigators');
+        applyFiltersAndSort();
+    } catch (err) {
+        console.error("Error loading data:", err);
+    }
+}
+
+function applyFiltersAndSort() {
+    let filtered = [...incidents];
+
+    // 1. Severity Filter (Checkbox based)
+    const checkedSeverities = Array.from(document.querySelectorAll('.severity-checkboxes input:checked'))
+                                  .map(cb => cb.value);
+
+    filtered = filtered.filter(i => {
+        const sev = i.severity || 'Unassigned';
+        return checkedSeverities.includes(sev) || (sev === 'Unassigned' && checkedSeverities.length < 4);
+    });
+
+    // 2. Date Filter
+    const minDateStr = document.getElementById('minDate').value;
+    const maxDateStr = document.getElementById('maxDate').value;
+
+    if (minDateStr || maxDateStr) {
+        const minDate = minDateStr ? new Date(minDateStr) : new Date(0);
+        const maxDate = maxDateStr ? new Date(maxDateStr) : new Date();
+        maxDate.setHours(23, 59, 59, 999);
+
+        filtered = filtered.filter(i => {
+            const d = new Date(i.incident_date);
+            return d >= minDate && d <= maxDate;
+        });
+    }
+
+    // 3. Sorting
+    const sortBy = document.getElementById('sortBy').value;
+    const sortOrder = document.getElementById('sortOrder').value;
+
+    filtered.sort((a, b) => {
+        let valA, valB;
+
+        if (sortBy === 'severity') {
+            valA = SEVERITY_ORDER[a.severity || 'Unassigned'];
+            valB = SEVERITY_ORDER[b.severity || 'Unassigned'];
+        } else {
+            valA = a[sortBy];
+            valB = b[sortBy];
+        }
+
+        if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+        if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+        return 0;
+    });
+
+    renderTable(filtered);
+}
+
+function renderTable(data) {
+    const tbody = document.getElementById('incidentTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    data.forEach(i => {
+        let invOptions = `<option value="">Unassigned</option>`;
+        investigators.forEach(inv => {
+            invOptions += `<option value="${inv.investigator_id}" ${i.investigator_id === inv.investigator_id ? 'selected' : ''}>${inv.name} (${inv.specialization || 'General'})</option>`;
+        });
+
+        tbody.innerHTML += `
+            <tr class="hover:bg-gray-50 transition-colors">
+                <td class="p-4 text-sm text-gray-600">${i.incident_id}</td>
+                <td class="p-4 text-sm text-gray-600">${new Date(i.incident_date).toLocaleDateString()}</td>
+                <td class="p-4 text-sm text-gray-800">${i.description}</td>
+                <td class="p-4">
+                    <select id="sev-${i.incident_id}" class="border p-1 rounded bg-white text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="Unassigned" ${!i.severity ? 'selected' : ''}>-- Select --</option>
+                        <option value="Low" ${i.severity === 'Low' ? 'selected' : ''}>Low</option>
+                        <option value="Medium" ${i.severity === 'Medium' ? 'selected' : ''}>Medium</option>
+                        <option value="High" ${i.severity === 'High' ? 'selected' : ''}>High</option>
+                        <option value="Critical" ${i.severity === 'Critical' ? 'selected' : ''}>Critical</option>
+                    </select>
+                </td>
+                <td class="p-4">
+                    <select id="inv-${i.incident_id}" class="border p-1 rounded bg-white text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                        ${invOptions}
+                    </select>
+                </td>
+                <td class="p-4">
+                    <button onclick="saveAssignment(${i.incident_id})" class="btn-action btn-save">Save</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+async function saveAssignment(id) {
+    const severity = document.getElementById(`sev-${id}`).value;
+    const invId = document.getElementById(`inv-${id}`).value;
+
+    try {
+        await CIIS.putJSON(`/api/incidents/${id}/assign`, {
+            severity: severity === 'Unassigned' ? null : severity,
+            investigator_id: invId ? parseInt(invId) : null
+        });
+        alert('Updated successfully!');
+        loadData();
+    } catch (err) {
+        alert('Error updating assignment: ' + err.message);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (!localStorage.getItem("currentAdmin")) {
+        window.location.assign("/");
+    }
+
+    // Sort Listeners
+    document.getElementById('sortBy').addEventListener('change', applyFiltersAndSort);
+    document.getElementById('sortOrder').addEventListener('change', applyFiltersAndSort);
+
+    // Severity Filter Listeners
+    document.querySelectorAll('.severity-checkboxes input').forEach(cb => {
+        cb.addEventListener('change', applyFiltersAndSort);
+    });
+
+    // Date Filter Listeners
+    document.getElementById('minDate').addEventListener('change', applyFiltersLAndSort);
+    document.getElementById('maxDate').addEventListener('change', applyFiltersAndSort);
+
+    // Handle the slider (conceptually maps to the date inputs)
+    const slider = document.getElementById('dateSlider');
+    slider.addEventListener('input', () => {
+        // In a real app, we would map slider values to date ranges.
+        // For this implementation, we rely on the explicit date inputs for precision.
+        applyFiltersAndSort();
+    });
+
+    loadData();
+});
