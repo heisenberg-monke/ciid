@@ -224,7 +224,7 @@ function renderTable(data) {
                         ${invOptions}
                     </select>
                 </td>
-                <td>
+                <td class="action-cell">
                     <button onclick="saveAssignment(${i.incident_id})" class="btn-action btn-save">Save</button>
                 </td>
             </tr>

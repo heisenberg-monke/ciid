@@ -216,8 +216,14 @@ main {
 }
 
 .action-cell {
-    width: 110px;
-    text-align: right;
+    width: 120px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.data-table th.action-cell {
+    text-align: center;
 }
 
 .delete-btn {

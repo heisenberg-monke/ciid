@@ -99,6 +99,7 @@ td {
     font-size: 14px;
     border-bottom: 1px solid var(--border);
     color: var(--text);
+    vertical-align: middle;
 }
 
 tr:last-child td {
@@ -110,13 +111,22 @@ tr:hover td {
 }
 
 .action-cell {
-    width: 110px;
-    text-align: right;
+    width: 120px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
 }
 
-.delete-btn {
+th.action-cell {
+    text-align: center;
+}
+
+.delete-btn,
+.btn-delete,
+button.bg-red-600 {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
     background: none;
     border: 1px solid #f0cbd1;
@@ -130,12 +140,20 @@ tr:hover td {
     white-space: nowrap;
 }
 
-.delete-btn:hover {
+.delete-btn:hover,
+.btn-delete:hover,
+button.bg-red-600:hover {
     background: #fff4f5;
     border-color: var(--red);
 }
 
-.delete-btn:disabled {
+button.bg-red-600::before {
+    content: "🗑 ";
+}
+
+.delete-btn:disabled,
+.btn-delete:disabled,
+button.bg-red-600:disabled {
     opacity: 0.45;
     cursor: wait;
 }
