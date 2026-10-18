@@ -8,10 +8,53 @@ const SEVERITY_ORDER = {
 
 let incidents = [];
 let investigators = [];
+let dateBounds = { min: null, max: null };
+
+function formatDate(date, forInput = false) {
+    if (!date) return '';
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return '';
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+
+    // HTML5 <input type="date"> REQUIREs yyyy-mm-dd format to display correctly
+    if (forInput) {
+        return `${year}-${month}-${day}`;
+    }
+    return `${year}/${month}/${day}`;
+}
+
+function updateDateRangeFromSliders() {
+    if (!dateBounds.min || !dateBounds.max) return;
+
+    const minVal = document.getElementById('minDateSlider').value;
+    const maxVal = document.getElementById('maxDateSlider').value;
+
+    const minBound = new Date(dateBounds.min);
+    const maxBound = new Date(dateBounds.max);
+    const totalMs = maxBound.getTime() - minBound.getTime();
+
+    const currentMin = new Date(minBound.getTime() + (minVal / 100) * totalMs);
+    const currentMax = new Date(minBound.getTime() + (maxVal / 100) * totalMs);
+
+    const minStrInput = formatDate(currentMin, true);
+    const maxStrInput = formatDate(currentMax, true);
+    const minStrLabel = formatDate(currentMin);
+    const maxStrLabel = formatDate(currentMax);
+
+    document.getElementById('minDate').value = minStrInput;
+    document.getElementById('maxDate').value = maxStrInput;
+    document.getElementById('minDateLabel').textContent = minStrLabel;
+    document.getElementById('maxDateLabel').textContent = maxStrLabel;
+}
 
 async function loadData() {
     try {
-        // Note: Initial load now triggers filter/sort automatically
+        const bounds = await CIIS.getJSON('/api/incidents/bounds');
+        dateBounds = bounds;
+
+        updateDateRangeFromSliders();
         await applyFiltersAndSort();
     } catch (err) {
         console.error("Error loading data:", err);
@@ -19,7 +62,6 @@ async function loadData() {
 }
 
 async function applyFiltersAndSort() {
-    // 1. Gather current UI state
     const sortBy = document.getElementById('sortBy').value;
     const sortOrder = document.getElementById('sortOrder').value;
 
@@ -29,22 +71,22 @@ async function applyFiltersAndSort() {
     const minDate = document.getElementById('minDate').value;
     const maxDate = document.getElementById('maxDate').value;
 
-    // 2. Construct Query String
     const params = new URLSearchParams();
     params.append('sort_by', sortBy);
     params.append('sort_order', sortOrder);
 
     if (checkedSeverities.length > 0) {
-        // FastAPI allows multiple values for the same key: ?severity=High&severity=Critical
         checkedSeverities.forEach(s => params.append('severity', s));
     }
 
-    if (minDate) params.append('date_min', minDate);
-    if (maxDate) params.append('date_max', maxDate);
+    // Only send date filters if they are not empty
+    if (minDate && minDate !== "") params.append('date_min', minDate);
+    if (maxDate && maxDate !== "") params.append('date_max', maxDate);
 
     try {
-        // 3. Fetch filtered and sorted data from backend
-        incidents = await CIIS.getJSON(`/api/incidents?${params.toString()}`);
+        // Use the constructed params to fetch data
+        const response = await CIIS.getJSON(`/api/incidents?${params.toString()}`);
+        incidents = response;
         investigators = await CIIS.getJSON('/api/investigators');
         renderTable(incidents);
     } catch (err) {
@@ -57,6 +99,11 @@ function renderTable(data) {
     if (!tbody) return;
     tbody.innerHTML = '';
 
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">No incidents found matching the filters.</td></tr>';
+        return;
+    }
+
     data.forEach(i => {
         let invOptions = `<option value="">Unassigned</option>`;
         investigators.forEach(inv => {
@@ -66,7 +113,7 @@ function renderTable(data) {
         tbody.innerHTML += `
             <tr class="hover:bg-gray-50 transition-colors">
                 <td class="p-4 text-sm text-gray-600">${i.incident_id}</td>
-                <td class="p-4 text-sm text-gray-600">${new Date(i.incident_date).toLocaleDateString()}</td>
+                <td class="p-4 text-sm text-gray-600">${formatDate(new Date(i.incident_date))}</td>
                 <td class="p-4 text-sm text-gray-800">${i.description}</td>
                 <td class="p-4">
                     <select id="sev-${i.incident_id}" class="border p-1 rounded bg-white text-sm outline-none focus:ring-2 focus:ring-blue-500">
@@ -111,24 +158,21 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.assign("/");
     }
 
-    // Sort Listeners
-    document.getElementById('sortBy').addEventListener('change', applyFiltersAndSort);
-    document.getElementById('sortOrder').addEventListener('change', applyFiltersAndSort);
+    document.getElementById('applyFiltersBtn').addEventListener('click', applyFiltersAndSort);
 
-    // Severity Filter Listeners
-    document.querySelectorAll('.severity-checkboxes input').forEach(cb => {
-        cb.addEventListener('change', applyFiltersAndSort);
-    });
+    const minSlider = document.getElementById('minDateSlider');
+    const maxSlider = document.getElementById('maxDateSlider');
 
-    // Date Filter Listeners
+    if (minSlider && maxSlider) {
+        const handleSlider = () => {
+            updateDateRangeFromSliders();
+        };
+        minSlider.addEventListener('input', handleSlider);
+        maxSlider.addEventListener('input', handleSlider);
+    }
+
     document.getElementById('minDate').addEventListener('change', applyFiltersAndSort);
     document.getElementById('maxDate').addEventListener('change', applyFiltersAndSort);
-
-    // Slider listener (if implemented in HTML)
-    const slider = document.getElementById('dateSlider');
-    if (slider) {
-        slider.addEventListener('input', applyFiltersAndSort);
-    }
 
     loadData();
 });

@@ -2,11 +2,11 @@ import crud, models
 
 from database               import SessionLocal, engine, Base
 from datetime               import datetime
-from fastapi                import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.responses      import FileResponse
 from fastapi.staticfiles    import StaticFiles
 from pathlib                import Path
-from pydantic               import BaseModel
+from pydantic               import BaseModel, ConfigDict
 from sqlalchemy.orm         import Session
 
 Base.metadata.create_all(bind=engine)
@@ -44,6 +44,13 @@ class InvestigatorCreate(BaseModel):
     email: str
     specialization: str | None = None
 
+class CategoryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    category_id: int
+    category_name: str
+    description: str | None = None
+
 # --- API Endpoints ---
 @app.get("/api/students")
 def read_students(db: Session = Depends(get_db)):
@@ -53,13 +60,17 @@ def read_students(db: Session = Depends(get_db)):
 def create_student(student: StudentCreate, db: Session = Depends(get_db)):
     return crud.create_student(db, name=student.name, email=student.email, phone=student.phone, department=student.department)
 
-@app.get("/api/categories")
+@app.get("/api/categories", response_model=list[CategoryOut])
 def read_categories(db: Session = Depends(get_db)):
     return crud.get_categories(db)
 
 @app.get("/api/locations")
 def read_locations(db: Session = Depends(get_db)):
     return crud.get_locations(db)
+
+@app.get("/api/incidents/bounds")
+def get_incident_bounds(db: Session = Depends(get_db)):
+    return crud.get_incidents_date_bounds(db)
 
 @app.get("/api/incidents")
 def read_incidents(
@@ -68,7 +79,7 @@ def read_incidents(
     limit: int = 100,
     sort_by: str = None,
     sort_order: str = 'asc',
-    severity: list[str] = None,
+    severity: list[str] | None = Query(None),
     date_min: str = None,
     date_max: str = None
 ):

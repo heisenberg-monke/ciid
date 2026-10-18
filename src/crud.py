@@ -22,14 +22,26 @@ def get_locations(db: Session):
 def get_investigators(db: Session):
     return db.query(Investigator).all()
 
+def get_incidents_date_bounds(db: Session):
+    from sqlalchemy import func
+    bounds = db.query(func.min(Incident.incident_date), func.max(Incident.incident_date)).first()
+    return {"min": bounds[0], "max": bounds[1]}
+
 # --- Incidents ---
 def get_incidents(db: Session, skip: int = 0, limit: int = 100, sort_by: str = None, sort_order: str = 'asc', severities: list = None, date_min: str = None, date_max: str = None):
-    from sqlalchemy import case, asc, desc
+    from sqlalchemy import case, asc, desc, or_
     query = db.query(Incident)
 
     # Filtering
     if severities:
-        query = query.filter(Incident.severity.in_(severities))
+        # Include unassigned (NULL) incidents when any severity filter is active,
+        # otherwise they disappear forever because NULL never matches IN (...).
+        query = query.filter(
+            or_(
+                Incident.severity.in_(severities),
+                Incident.severity.is_(None)
+            )
+        )
     if date_min:
         query = query.filter(Incident.incident_date >= date_min)
     if date_max:

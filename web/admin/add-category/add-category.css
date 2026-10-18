@@ -158,3 +158,54 @@ main {
 .hidden {
     display: none;
 }
+
+.existing-list-section {
+    margin-top: 40px;
+}
+
+.list-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 16px;
+}
+
+.existing-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.category-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(10, 22, 51, 0.03);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.category-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(10, 22, 51, 0.08);
+}
+
+.category-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cat-name {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--navy);
+}
+
+.cat-desc {
+    font-size: 13px;
+    color: var(--muted);
+}
+

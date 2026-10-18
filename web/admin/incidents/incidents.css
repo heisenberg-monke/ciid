@@ -118,19 +118,36 @@ tr:hover td {
     gap: 12px;
 }
 
-.sort-group {
+.sort-controls {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: white;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.sort-group select {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+.sort-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.sort-item select {
+    background: #f8fafd;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.sort-item select:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 2px rgba(66, 99, 235, 0.2);
 }
 
 /* Filter Panel */
@@ -141,9 +158,36 @@ tr:hover td {
     padding: 20px;
     margin-bottom: 24px;
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 32px;
     box-shadow: 0 4px 12px rgba(10, 22, 51, 0.05);
+    position: relative;
+}
+
+.filter-actions {
+    grid-column: span 3;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+}
+
+.btn-apply {
+    background: var(--blue);
+    color: white;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 6px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-apply:hover {
+    background: #2563eb;
 }
 
 .filter-section {
@@ -178,11 +222,26 @@ tr:hover td {
     border-radius: 6px;
     border: 1px solid var(--border);
     transition: all 0.2s;
+    user-select: none;
+}
+
+.checkbox-label:has(input:checked) {
+    background: var(--blue);
+    color: white;
+    border-color: var(--blue);
+}
+
+.checkbox-label input {
+    accent-color: white;
 }
 
 .checkbox-label:hover {
     background: #effbf6;
     border-color: var(--blue);
+}
+
+.checkbox-label:has(input:checked):hover {
+    background: #2563eb;
 }
 
 .date-slider-container {
@@ -198,6 +257,47 @@ tr:hover td {
     color: var(--muted);
     font-weight: 600;
 }
+
+.dual-slider-container {
+    position: relative;
+    height: 30px;
+    margin: 10px 0;
+    background: #e5e9f2;
+    border-radius: 10px;
+}
+
+.dual-slider-container .date-slider {
+    position: absolute;
+    width: 100%;
+    pointer-events: none;
+    -webkit-appearance: none;
+    background: none;
+    top: 5px;
+}
+
+.dual-slider-container .date-slider::-webkit-slider-thumb {
+    pointer-events: auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--blue);
+    cursor: pointer;
+    -webkit-appearance: none;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.dual-slider-container .date-slider::-moz-range-thumb {
+    pointer-events: auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--blue);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
 
 .date-slider {
     width: 100%;
@@ -216,6 +316,14 @@ tr:hover td {
     border-radius: 6px;
     font-family: inherit;
     font-size: 13px;
+    background: #f8fafd;
+    color: var(--text);
+}
+
+.date-inputs input:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 2px rgba(66, 99, 235, 0.2);
 }
 
 .date-sep {
