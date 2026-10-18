@@ -6,12 +6,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const investigator = JSON.parse(invStr);
 
-    // Handle Logout
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('currentInvestigator');
-            window.location.href = '/';
-        });
+    // Personalise welcome
+    const heading = document.getElementById('welcomeHeading');
+    const msg     = document.getElementById('welcomeMsg');
+    if (heading && investigator.name) {
+        heading.textContent = `Welcome back, ${investigator.name.split(' ')[0]}.`;
     }
+    if (msg && investigator.specialization) {
+        msg.textContent = `${investigator.specialization} · Review and manage your active investigations.`;
+    }
+
+    // Logout
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        localStorage.removeItem('currentInvestigator');
+        window.location.href = '/';
+    });
 });

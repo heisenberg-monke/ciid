@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | CIIS</title>
+    <link rel="stylesheet" href="/static/core/core.css">
+    <link rel="stylesheet" href="/static/investigator/profile/profile.css">
+</head>
+<body>
+    <nav class="topnav">
+        <div class="nav-inner">
+            <a href="/investigator-home" class="nav-back">⬅ Back to Dashboard</a>
+            <span class="nav-user" id="navUser"></span>
+        </div>
+    </nav>
+
+    <div class="page-shell">
+        <header class="page-header">
+            <h1>My Profile</h1>
+            <p>Your professional credentials and account details.</p>
+        </header>
+
+        <!-- Profile card -->
+        <div class="profile-card">
+            <div class="avatar" id="avatarInitials">?</div>
+            <div class="profile-info">
+                <h2 id="profileName">—</h2>
+                <p id="profileSpecialization" class="specialization-label">—</p>
+                <span class="availability-pill" id="availabilityPill">—</span>
+            </div>
+        </div>
+
+        <!-- Details grid -->
+        <div class="details-grid">
+            <div class="detail-section">
+                <h3 class="section-title">Account Details</h3>
+                <dl class="detail-list">
+                    <div class="detail-row">
+                        <dt>Staff ID</dt>
+                        <dd id="detStaffId">—</dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt>Email</dt>
+                        <dd id="detEmail">—</dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt>Specialization</dt>
+                        <dd id="detSpecialization">—</dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt>Availability</dt>
+                        <dd id="detAvailability">—</dd>
+                    </div>
+                </dl>
+            </div>
+
+            <div class="detail-section">
+                <h3 class="section-title">Case Summary</h3>
+                <dl class="detail-list">
+                    <div class="detail-row">
+                        <dt>Total Assigned</dt>
+                        <dd id="sumTotal">—</dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt>Open</dt>
+                        <dd id="sumOpen">—</dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt>In Progress</dt>
+                        <dd id="sumInProgress">—</dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt>Resolved / Closed</dt>
+                        <dd id="sumResolved">—</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <div class="action-row">
+            <a href="/my-cases" class="btn-primary">View My Cases →</a>
+        </div>
+    </div>
+
+    <script src="/static/core/core.js"></script>
+    <script src="/static/investigator/profile/profile.js" defer></script>
+</body>
+</html>

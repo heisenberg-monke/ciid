@@ -35,7 +35,7 @@ class IncidentCreate(BaseModel):
     location_id: int
     reported_by: int
     incident_date: datetime
-    severity: str
+    severity: str | None = None
     description: str
 
 class InvestigatorCreate(BaseModel):
@@ -163,25 +163,6 @@ class AdminLogin(BaseModel):
     email: str
     password: str
 
-# --- Student Incident Creation (No severity from student) ---
-class StudentIncidentCreate(BaseModel):
-    category_id: int
-    location_id: int
-    reported_by: int
-    incident_date: datetime
-    description: str
-
-@app.post("/api/incidents")
-def create_incident(incident: StudentIncidentCreate, db: Session = Depends(get_db)):
-    return crud.create_incident(
-        db, 
-        category_id=incident.category_id,
-        location_id=incident.location_id,
-        reported_by=incident.reported_by,
-        incident_date=incident.incident_date,
-        severity=None, # Student does not set severity
-        description=incident.description
-    )
 
 # --- Admin APIs ---
 @app.post("/api/admin/login")
@@ -218,6 +199,21 @@ def assign_incident(incident_id: int, data: IncidentAssign, db: Session = Depend
         return updated
     raise HTTPException(status_code=404, detail="Incident not found")
 
+# --- Investigator API ---
+class InvestigationStatusUpdate(BaseModel):
+    status: str
+
+@app.get("/api/investigators/{investigator_id}/cases")
+def get_investigator_cases(investigator_id: int, db: Session = Depends(get_db)):
+    return crud.get_cases_for_investigator(db, investigator_id)
+
+@app.put("/api/investigations/{investigation_id}/status")
+def update_investigation_status(investigation_id: int, data: InvestigationStatusUpdate, db: Session = Depends(get_db)):
+    result = crud.update_investigation_status(db, investigation_id, data.status)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Investigation not found")
+    return result
+
 # --- Page Routes ---
 @app.get("/admin-home")
 def serve_admin_home():
@@ -229,7 +225,11 @@ def serve_my_incidents():
 
 @app.get("/my-cases")
 def serve_my_cases():
-    return FileResponse(str(WEB_DIR / "core" / "not-implemented.html"))
+    return FileResponse(str(WEB_DIR / "investigator" / "my-cases" / "my-cases.html"))
+
+@app.get("/investigator/profile")
+def serve_investigator_profile():
+    return FileResponse(str(WEB_DIR / "investigator" / "profile" / "profile.html"))
 
 @app.get("/profile")
 def serve_profile():

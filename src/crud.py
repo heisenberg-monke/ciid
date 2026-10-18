@@ -230,3 +230,41 @@ def assign_severity_and_investigator(db: Session, incident_id: int, severity: st
     db.commit()
     db.refresh(incident)
     return incident
+
+
+def get_cases_for_investigator(db: Session, investigator_id: int):
+    """Return all incidents assigned to this investigator, enriched with investigation info."""
+    rows = (
+        db.query(Investigation, Incident)
+        .join(Incident, Investigation.incident_id == Incident.incident_id)
+        .filter(Investigation.investigator_id == investigator_id)
+        .order_by(Incident.incident_id.desc())
+        .all()
+    )
+    result = []
+    for inv, inc in rows:
+        result.append({
+            "investigation_id":     inv.investigation_id,
+            "investigation_status": inv.status,
+            "incident_id":          inc.incident_id,
+            "category_id":          inc.category_id,
+            "location_id":          inc.location_id,
+            "reported_by":          inc.reported_by,
+            "incident_date":        inc.incident_date,
+            "reported_date":        inc.reported_date,
+            "severity":             inc.severity,
+            "description":          inc.description,
+            "status":               inc.status,
+        })
+    return result
+
+
+def update_investigation_status(db: Session, investigation_id: int, status: str):
+    """Update the status field of an Investigation row."""
+    inv = db.query(Investigation).filter(Investigation.investigation_id == investigation_id).first()
+    if not inv:
+        return None
+    inv.status = status
+    db.commit()
+    db.refresh(inv)
+    return {"investigation_id": inv.investigation_id, "status": inv.status}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Active Cases | CIIS</title>
+    <link rel="stylesheet" href="/static/core/core.css">
+    <link rel="stylesheet" href="/static/investigator/my-cases/my-cases.css">
+</head>
+<body>
+    <nav class="topnav">
+        <div class="nav-inner">
+            <a href="/investigator-home" class="nav-back">⬅ Back to Dashboard</a>
+            <span class="nav-user" id="navUser"></span>
+        </div>
+    </nav>
+
+    <div class="page-shell">
+        <header class="page-header">
+            <div>
+                <h1>My Active Cases</h1>
+                <p id="caseCount">Loading your assignments…</p>
+            </div>
+        </header>
+
+        <!-- Stats row -->
+        <div class="stats-row" id="statsRow">
+            <div class="stat-card">
+                <span class="stat-num" id="statOpen">—</span>
+                <span class="stat-label">Open</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-num" id="statInProgress">—</span>
+                <span class="stat-label">In Progress</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-num" id="statResolved">—</span>
+                <span class="stat-label">Resolved</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-num" id="statTotal">—</span>
+                <span class="stat-label">Total</span>
+            </div>
+        </div>
+
+        <!-- Cases table -->
+        <div class="table-container">
+            <table id="casesTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Description</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th class="action-cell">Update Status</th>
+                    </tr>
+                </thead>
+                <tbody id="casesBody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="/static/core/core.js"></script>
+    <script src="/static/investigator/my-cases/my-cases.js" defer></script>
+</body>
+</html>

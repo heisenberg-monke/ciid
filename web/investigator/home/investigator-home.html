@@ -3,35 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investigator Home | CIIS</title>
-    <link rel="stylesheet" href="/static/core/core.css">
+    <title>Investigator Portal | CIIS</title>
     <link rel="stylesheet" href="/static/investigator/home/home.css">
 </head>
 <body>
-    <div class="page-shell">
-        <header class="header">
-            <div>
-                <h1>Investigator Portal</h1>
-                <p>Welcome back. Review and manage your active investigations.</p>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span>🕵️</span>
+                <h1>CIIS Investigator Portal</h1>
             </div>
-            <button id="logoutBtn" class="btn-danger">Logout</button>
+            <button id="logoutBtn">Logout</button>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <h2 id="welcomeHeading">My Dashboard</h2>
+            <p id="welcomeMsg">Review and manage your active investigations.</p>
         </header>
 
-        <div class="card-grid">
-            <a href="/my-cases" class="home-card">
+        <div class="dashboard-grid">
+            <a href="/my-cases" class="inv-card">
                 <div class="card-icon">📂</div>
                 <h3>My Active Cases</h3>
-                <p>View all incidents assigned to you.</p>
+                <p>View all incidents assigned to you and update their status.</p>
             </a>
-            <a href="/profile" class="home-card">
+            <a href="/investigator/profile" class="inv-card">
                 <div class="card-icon">👤</div>
                 <h3>Profile</h3>
-                <p>Manage your professional credentials.</p>
+                <p>View your professional credentials and case summary.</p>
             </a>
         </div>
-    </div>
+    </main>
 
-    <script src="/static/core/core.js"></script>
     <script src="/static/investigator/home/home.js" defer></script>
 </body>
 </html>

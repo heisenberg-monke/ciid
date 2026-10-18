@@ -1,134 +1,129 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const student = JSON.parse(localStorage.getItem('currentStudent'));
-    if (!student) {
+    // ── Auth guard ────────────────────────────────────────────────
+    const studentStr = localStorage.getItem('currentStudent');
+    if (!studentStr) {
         window.location.href = '/';
         return;
     }
+    const student = JSON.parse(studentStr);
 
-    // Load Dropdowns
+    const msgEl = document.getElementById('formMessage');
+
+    function showMsg(text, type = 'error') {
+        msgEl.textContent = text;
+        msgEl.className = `form-message ${type}`;
+        msgEl.classList.remove('hidden');
+        msgEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideMsg() {
+        msgEl.classList.add('hidden');
+    }
+
+    // ── Back button ───────────────────────────────────────────────
+    document.getElementById('backBtn')?.addEventListener('click', () => {
+        window.location.href = '/student-home';
+    });
+
+    // ── Load dropdowns ────────────────────────────────────────────
     try {
-        const catRes = await fetch('/api/categories');
-        const categories = await catRes.json();
+        const [categories, locations] = await Promise.all([
+            fetch('/api/categories').then(r => r.json()),
+            fetch('/api/locations').then(r => r.json()),
+        ]);
+
         const catSelect = document.getElementById('incidentCategory');
         categories.forEach(c => {
             catSelect.innerHTML += `<option value="${c.category_id}">${c.category_name}</option>`;
         });
 
-        const locRes = await fetch('/api/locations');
-        const locations = await locRes.json();
         const locSelect = document.getElementById('incidentLocation');
         locations.forEach(l => {
-            locSelect.innerHTML += `<option value="${l.location_id}">${l.building} - Room ${l.room_no}</option>`;
+            locSelect.innerHTML += `<option value="${l.location_id}">${l.building} – Room ${l.room_no}</option>`;
         });
     } catch (err) {
-        console.error("Error loading dropdown data:", err);
+        showMsg('Failed to load form data. Please refresh the page.');
+        console.error('Error loading dropdown data:', err);
     }
 
-    // Handle Form Submit
+    function formatErrorDetail(detail) {
+        if (typeof detail === 'string') return detail;
+        if (Array.isArray(detail)) {
+            return detail.map(d => `${d.loc ? d.loc.slice(1).join(' ') : ''}: ${d.msg}`.trim()).join('; ');
+        }
+        return 'Invalid data submitted.';
+    }
+
+    // ── Form submit ───────────────────────────────────────────────
     document.getElementById('incidentForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        hideMsg();
+
+        if (!student.student_id) {
+            showMsg('Student session invalid. Please log in again.');
+            return;
+        }
+
+        const catVal  = document.getElementById('incidentCategory').value;
+        const locVal  = document.getElementById('incidentLocation').value;
+        const rawDate = document.getElementById('incidentDate').value;
+        const desc    = document.getElementById('incidentDescription').value.trim();
+
+        if (!catVal) {
+            showMsg('Please select an incident category.');
+            return;
+        }
+        if (!locVal) {
+            showMsg('Please select an incident location.');
+            return;
+        }
+        if (!rawDate) {
+            showMsg('Please specify the date and time of the incident.');
+            return;
+        }
+        if (!desc) {
+            showMsg('Please provide a description of the incident.');
+            return;
+        }
+
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting…';
+
+        // datetime-local gives "YYYY-MM-DDTHH:MM" — append seconds so the
+        // Python datetime parser accepts it as a valid ISO 8601 string.
+        const isoDate = rawDate.length === 16 ? rawDate + ':00' : rawDate;
+
         const data = {
-    category_id: parseInt(document.getElementById('incidentCategory').value),
-    location_id: parseInt(document.getElementById('incidentLocation').value),
-    reported_by: student.student_id,
-    incident_date: document.getElementById('incidentDate').value,
-    description: document.getElementById('incidentDescription').value
-};
+            category_id:   parseInt(catVal, 10),
+            location_id:   parseInt(locVal, 10),
+            reported_by:   student.student_id,
+            incident_date: isoDate,
+            severity:      null,
+            description:   desc,
+        };
 
-        const res = await fetch('/api/incidents', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
+        try {
+            const res = await fetch('/api/incidents', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(data),
+            });
 
-        if (res.ok) {
-            alert('Incident reported successfully!');
-            window.location.href = '/student-home';
-        } else {
-            alert('Failed to submit incident.');
+            if (res.ok) {
+                showMsg('Incident reported successfully! Redirecting…', 'success');
+                setTimeout(() => window.location.href = '/student-home', 1500);
+            } else {
+                const err = await res.json().catch(() => ({}));
+                const errText = formatErrorDetail(err.detail) || res.statusText;
+                showMsg(`Failed to submit: ${errText}`);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Report';
+            }
+        } catch (err) {
+            showMsg('Network error. Please try again.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Report';
         }
     });
-
-    document.getElementById('backBtn').addEventListener('click', () => {
-        window.location.href = '/student-home';
-    });
-
 });
-
-let incidents = [];
-let investigators = [];
-
-async function loadData() {
-    const incRes = await fetch('/api/incidents');
-    incidents = await incRes.json();
-    
-    const invRes = await fetch('/api/investigators');
-    investigators = await invRes.json();
-
-    renderTable(incidents);
-}
-
-function renderTable(data) {
-    const tbody = document.getElementById('incidentTableBody');
-    tbody.innerHTML = '';
-    
-    data.forEach(i => {
-        let invOptions = `<option value="">Unassigned</option>`;
-        investigators.forEach(inv => {
-            invOptions += `<option value="${inv.investigator_id}">${inv.name} (${inv.specialization || 'General'})</option>`;
-        });
-
-        tbody.innerHTML += `
-            <tr class="hover:bg-gray-50 border-b">
-                <td class="p-3">${i.incident_id}</td>
-                <td class="p-3">${new Date(i.incident_date).toLocaleDateString()}</td>
-                <td class="p-3">${i.description}</td>
-                <td class="p-3">
-                    <select id="sev-${i.incident_id}" class="border p-1 rounded bg-white">
-                        <option value="Unassigned" ${!i.severity ? 'selected' : ''}>-- Select --</option>
-                        <option value="Low" ${i.severity === 'Low' ? 'selected' : ''}>Low</option>
-                        <option value="Medium" ${i.severity === 'Medium' ? 'selected' : ''}>Medium</option>
-                        <option value="High" ${i.severity === 'High' ? 'selected' : ''}>High</option>
-                        <option value="Critical" ${i.severity === 'Critical' ? 'selected' : ''}>Critical</option>
-                    </select>
-                </td>
-                <td class="p-3">
-                    <select id="inv-${i.incident_id}" class="border p-1 rounded bg-white">
-                        ${invOptions}
-                    </select>
-                </td>
-                <td class="p-3">
-                    <button onclick="saveAssignment(${i.incident_id})" class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Save</button>
-                </td>
-            </tr>
-        `;
-    });
-}
-
-async function saveAssignment(id) {
-    const severity = document.getElementById(`sev-${id}`).value;
-    const invId = document.getElementById(`inv-${id}`).value;
-
-    const res = await fetch(`/api/incidents/${id}/assign`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            severity: severity === 'Unassigned' ? null : severity,
-            investigator_id: invId ? parseInt(invId) : null
-        })
-    });
-
-    if (res.ok) {
-        alert('Updated successfully!');
-        loadData();
-    }
-}
-
-// Filter Function
-document.getElementById('filterSeverity').addEventListener('change', (e) => {
-    const val = e.target.value;
-    const filtered = val ? incidents.filter(i => i.severity === val) : incidents;
-    renderTable(filtered);
-});
-
-loadData();

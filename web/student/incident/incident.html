@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Incident | CIIS</title>
-    <link rel="stylesheet" href="/static/core/core.css">
-    <link rel="stylesheet" href="/static/student/incident/incident.css">
+    <link rel="stylesheet" href="/static/core/core.css?v=2">
+    <link rel="stylesheet" href="/static/student/incident/incident.css?v=2">
 </head>
 <body>
     <div class="page-shell">
@@ -30,20 +30,9 @@
                     </select>
                 </div>
 
-                <div class="field-row">
-                    <div class="field">
-                        <label for="incidentDate">Incident Date & Time</label>
-                        <input type="datetime-local" id="incidentDate" required class="input-field">
-                    </div>
-                    <div class="field">
-                        <label for="incidentSeverity">Severity</label>
-                        <select id="incidentSeverity" required class="input-field">
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                            <option value="Critical">Critical</option>
-                        </select>
-                    </div>
+                <div class="field">
+                    <label for="incidentDate">Incident Date & Time</label>
+                    <input type="datetime-local" id="incidentDate" required class="input-field">
                 </div>
 
                 <div class="field">
@@ -57,7 +46,7 @@
         </div>
     </div>
 
-    <script src="/static/core/core.js"></script>
-    <script src="/static/student/incident/incident.js" defer></script>
+    <script src="/static/core/core.js?v=2"></script>
+    <script src="/static/student/incident/incident.js?v=2" defer></script>
 </body>
 </html>

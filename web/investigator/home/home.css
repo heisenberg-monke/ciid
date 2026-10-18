@@ -1,65 +1,121 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --navy: #101a35;
-    --blue: #4263eb;
-    --text: #18233d;
-    --muted: #78839b;
-    --border: #e5e9f2;
-    --surface: #ffffff;
+    --navy:       #101a35;
+    --navy-light: #1b2a4d;
+    --blue:       #4263eb;
+    --blue-dark:  #304fd0;
+    --red:        #d9465f;
+    --text:       #18233d;
+    --muted:      #78839b;
+    --border:     #e5e9f2;
+    --surface:    #ffffff;
     --background: #f3f6fc;
 }
 
 body {
     margin: 0;
+    min-height: 100vh;
     font-family: 'DM Sans', sans-serif;
     color: var(--text);
     background: var(--background);
 }
 
-.page-shell {
+/* ── Navigation — identical to admin home ───────────────────────── */
+nav {
+    background: var(--navy);
+    color: white;
+    padding: 16px 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+}
+
+.nav-brand h1 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+}
+
+#logoutBtn {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+#logoutBtn:hover {
+    filter: brightness(1.1);
+}
+
+/* ── Main content ───────────────────────────────────────────────── */
+main {
     max-width: 1100px;
     margin: 0 auto;
     padding: 40px 20px;
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.page-header {
     margin-bottom: 32px;
 }
 
-.header h1 {
+.page-header h2 {
     font-family: 'Manrope', sans-serif;
     font-size: 28px;
     font-weight: 800;
     color: var(--navy);
+    margin: 0 0 8px;
+}
+
+.page-header p {
+    color: var(--muted);
+    font-size: 15px;
     margin: 0;
 }
 
-.card-grid {
+/* ── Card grid ──────────────────────────────────────────────────── */
+.dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 24px;
 }
 
-.home-card {
+.inv-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 24px;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.home-card:hover {
+.inv-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 24px rgba(10, 22, 51, 0.08);
+    border-color: var(--blue);
 }
 
 .card-icon {
@@ -67,7 +123,7 @@ body {
     margin-bottom: 8px;
 }
 
-.home-card h3 {
+.inv-card h3 {
     font-family: 'Manrope', sans-serif;
     font-size: 18px;
     font-weight: 700;
@@ -75,8 +131,9 @@ body {
     margin: 0;
 }
 
-.home-card p {
+.inv-card p {
     font-size: 14px;
     color: var(--muted);
     margin: 0;
+    line-height: 1.5;
 }

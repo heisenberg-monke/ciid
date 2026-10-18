@@ -1,25 +1,32 @@
-function logout() {
-    console.log("Executing logout...");
-    localStorage.removeItem('currentStudent');
-    window.location.href = '/';
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Student home JS loaded");
     const studentStr = localStorage.getItem('currentStudent');
-
     if (!studentStr) {
-        console.log("No session found, redirecting...");
         window.location.href = '/';
         return;
     }
 
+    let student;
     try {
-        const student = JSON.parse(studentStr);
-        console.log("Student session active:", student.name);
+        student = JSON.parse(studentStr);
     } catch (e) {
-        console.error("Failed to parse student session", e);
         localStorage.removeItem('currentStudent');
         window.location.href = '/';
+        return;
     }
+
+    // Personalise welcome
+    const heading = document.getElementById('welcomeHeading');
+    const msg     = document.getElementById('welcomeMsg');
+    if (heading && student.name) {
+        heading.textContent = `Welcome back, ${student.name.split(' ')[0]}.`;
+    }
+    if (msg && student.department) {
+        msg.textContent = `${student.department} · Report and track campus incidents.`;
+    }
+
+    // Logout
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        localStorage.removeItem('currentStudent');
+        window.location.href = '/';
+    });
 });

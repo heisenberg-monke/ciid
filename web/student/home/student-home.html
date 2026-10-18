@@ -3,47 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Home | CIIS</title>
-    <link rel="stylesheet" href="/static/core/core.css">
-    <link rel="stylesheet" href="/static/student/home/home.css">
+    <title>Student Portal | CIIS</title>
+    <link rel="stylesheet" href="/static/student/home/home.css?v=2">
 </head>
 <body>
-    <div class="page-shell">
-        <header class="header">
-            <div>
-                <h1>Student Portal</h1>
-                <p>Welcome back to the Campus Incident Information System.</p>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span>🎓</span>
+                <h1>CIIS Student Portal</h1>
             </div>
-            <button id="logoutBtn" class="btn-danger" onclick="logout()">Logout</button>
+            <button id="logoutBtn">Logout</button>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <h2 id="welcomeHeading">My Dashboard</h2>
+            <p id="welcomeMsg">Report and track campus incidents.</p>
         </header>
 
-        <div class="card-grid">
-            <a href="/incident" class="home-card">
+        <div class="dashboard-grid">
+            <a href="/incident" class="student-card">
                 <div class="card-icon">🚨</div>
                 <h3>Report Incident</h3>
                 <p>Submit a new report about a campus event.</p>
             </a>
-            <a href="/my-incidents" class="home-card">
+            <a href="/my-incidents" class="student-card">
                 <div class="card-icon">📋</div>
                 <h3>My Reports</h3>
                 <p>Track the status of your reported incidents.</p>
             </a>
-            <a href="/profile" class="home-card">
+            <a href="/profile" class="student-card">
                 <div class="card-icon">👤</div>
                 <h3>Profile</h3>
                 <p>Manage your personal and academic information.</p>
             </a>
         </div>
-    </div>
+    </main>
 
-    <script src="/static/core/core.js"></script>
-    <script>
-        function logout() {
-            console.log("Executing inline logout...");
-            localStorage.removeItem('currentStudent');
-            window.location.href = '/';
-        }
-    </script>
-    <script src="/static/student/home/home.js"></script>
+    <script src="/static/student/home/home.js?v=2" defer></script>
 </body>
 </html>
